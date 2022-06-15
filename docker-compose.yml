@@ -1,0 +1,40 @@
+version: '3'
+
+networks:
+  backend:
+
+services:
+
+  mysql:
+    container_name: "${PROJECT_NAME}_mysql"
+    build:
+      context: ./mysql
+      args:
+        - MYSQL_VERSION=${MYSQL_VERSION}
+    ports:
+      - 3306:3306
+    volumes:
+      - ${DATA_PATH_HOST}/mysql/:/var/lib/mysql/
+      - ./mysql/:/tmp/mysql/
+    networks:
+      - backend
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - TZ=${WORKSPACE_TIMEZONE}
+
+  mongodb:
+    container_name: "${PROJECT_NAME}_mongodb"
+    build:
+      context: ./mongodb
+      args:
+        - MONGO_VERSION=${MONGO_VERSION}
+    ports:
+      - 27017:27017
+    volumes:
+      - ${DATA_PATH_HOST}/mongodb/:/data/db/
+      - ./mongodb/:/tmp/mongodb/
+    networks:
+      - backend
